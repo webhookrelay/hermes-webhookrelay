@@ -1,15 +1,21 @@
 name: webhookrelay
 label: Webhook Relay
 kind: platform
+version: 0.1.0
 description: >
-  Durable and secure webhook triggers for Hermes Agent. Webhook Relay provides
-  a stable public HTTPS endpoint, queues events while the gateway is offline,
-  forwards through an outbound-only connection, retries failed agent runs, and
-  keeps delivery logs. The plugin adds local provider signature verification,
-  bounded concurrency, restart-safe idempotency, and an explicit untrusted-data
-  boundary around every agent prompt.
+  Durable and secure webhook triggers for Hermes Agent through a stable public
+  endpoint and an outbound-only connection to a private gateway.
 author: Webhook Relay
 homepage: https://github.com/webhookrelay/hermes-webhookrelay
+license: MIT
+tags: [webhooks, gateway, automation, durable-delivery]
+provides_tools:
+  - webhookrelay_queue_status
+  - webhookrelay_list_failed_events
+  - webhookrelay_get_event
+provides_hooks: []
+python_dependencies:
+  - "aiohttp>=3.9,<4"
 requires_env: []
 optional_env:
   - name: RELAY_KEY

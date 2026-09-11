@@ -33,7 +33,7 @@ classifiers = [
 dependencies = ["aiohttp>=3.9"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.16"]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "pyyaml>=6", "ruff>=0.16"]
 
 [project.entry-points."hermes_agent.plugins"]
 webhookrelay = "webhookrelay_hermes"
@@ -50,7 +50,7 @@ packages = ["webhookrelay_hermes", "webhookrelay_hermes.skills"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-webhookrelay_hermes = ["plugin.yaml", "skills/**/*"]
+webhookrelay_hermes = ["skills/**/*"]
 
 
 [tool.setuptools_scm]

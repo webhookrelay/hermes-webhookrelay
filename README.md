@@ -49,6 +49,12 @@ hermes plugins enable webhookrelay
 relay login
 ```
 
+Hermes Desktop users can also use the
+[one-click installer](hermes://plugin/install?repo=webhookrelay/hermes-webhookrelay&enable=1).
+The plugin is installable directly from GitHub today; its submission to the
+reviewed Hermes Plugin Catalog will follow after the catalog's required release
+and commit-aging window.
+
 `relay login` stores a token locally. For a service or container, use environment
 variables instead:
 
