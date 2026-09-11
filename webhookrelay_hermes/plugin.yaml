@@ -1,0 +1,30 @@
+name: webhookrelay
+label: Webhook Relay
+kind: platform
+description: >
+  Durable and secure webhook triggers for Hermes Agent. Webhook Relay provides
+  a stable public HTTPS endpoint, queues events while the gateway is offline,
+  forwards through an outbound-only connection, retries failed agent runs, and
+  keeps delivery logs. The plugin adds local provider signature verification,
+  bounded concurrency, restart-safe idempotency, and an explicit untrusted-data
+  boundary around every agent prompt.
+author: Webhook Relay
+homepage: https://github.com/webhookrelay/hermes-webhookrelay
+requires_env: []
+optional_env:
+  - name: RELAY_KEY
+    description: Webhook Relay token key from my.webhookrelay.com/tokens
+    prompt: Webhook Relay token key
+    password: true
+  - name: RELAY_SECRET
+    description: Webhook Relay token secret
+    prompt: Webhook Relay token secret
+    password: true
+  - name: WEBHOOKRELAY_HERMES_PORT
+    description: Local adapter port (default 3580)
+    prompt: Adapter port
+    password: false
+  - name: WEBHOOKRELAY_HERMES_PATH
+    description: Local adapter base path (default /webhookrelay)
+    prompt: Adapter path
+    password: false
