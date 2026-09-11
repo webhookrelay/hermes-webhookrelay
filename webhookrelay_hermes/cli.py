@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -41,6 +42,45 @@ def register_cli(parser: argparse.ArgumentParser) -> None:
 
 def _run(command: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(command, text=True, capture_output=True, timeout=30)
+
+
+def _duration_seconds(value: str) -> float | None:
+    match = re.fullmatch(
+        r"(?:(?P<hours>\d+(?:\.\d+)?)h)?"
+        r"(?:(?P<minutes>\d+(?:\.\d+)?)m)?"
+        r"(?:(?P<seconds>\d+(?:\.\d+)?)s)?",
+        value.strip(),
+    )
+    if not match or not any(match.groupdict().values()):
+        return None
+    return sum(
+        float(match.group(name) or 0) * multiplier
+        for name, multiplier in (("hours", 3600), ("minutes", 60), ("seconds", 1))
+    )
+
+
+def _output_timeout_is_configured(
+    relay_binary: str, bucket: str, destination: str, timeout: int
+) -> bool:
+    result = _run(
+        [
+            relay_binary,
+            "output",
+            "ls",
+            "--bucket",
+            bucket,
+            "--format",
+            "{{.Destination}}\t{{.Timeout}}",
+        ]
+    )
+    if result.returncode:
+        return False
+    for line in result.stdout.splitlines():
+        configured_destination, separator, configured_timeout = line.partition("\t")
+        seconds = _duration_seconds(configured_timeout) if separator else None
+        if configured_destination == destination and seconds is not None:
+            return seconds >= timeout
+    return False
 
 
 def _setup(args: argparse.Namespace) -> int:
@@ -86,9 +126,13 @@ def _setup(args: argparse.Namespace) -> int:
     )
     print(result.stdout.strip())
     if update.returncode:
-        print("Warning: route exists, but its output timeout could not be updated:")
-        print(update.stderr.strip() or update.stdout.strip())
-        return update.returncode
+        if not _output_timeout_is_configured(
+            args.relay_binary, bucket, destination, args.timeout + 30
+        ):
+            print("Warning: route exists, but its output timeout could not be updated:")
+            print(update.stderr.strip() or update.stdout.strip())
+            return update.returncode
+        print("Output timeout verified after a relay CLI response-decoding warning.")
     print(
         f"Configured Hermes route {route!r} on bucket {bucket!r} "
         f"(agent timeout {args.timeout}s)."
