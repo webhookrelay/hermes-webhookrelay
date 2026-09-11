@@ -11,18 +11,7 @@ the delivery open until the *agent run* finishes. Success returns `2xx`; failure
 returns `5xx`, so Webhook Relay retries the event instead of losing it after an
 early `202`.
 
-```text
-GitHub / Stripe / any provider
-              │ public HTTPS
-              ▼
-       Webhook Relay bucket          queues while Hermes is offline
-              │ outbound stream      no firewall ports or public IP
-              ▼
-   hermes-webhookrelay adapter       verifies + deduplicates + limits concurrency
-              │
-              ▼
-         Hermes Agent run            HTTP outcome reflects the real run outcome
-```
+![Webhook providers send events to Webhook Relay, which delivers them over an outbound-only connection to a private Hermes Agent; failed agent runs return to the durable queue for retry](docs/architecture.svg)
 
 ## What is included
 
