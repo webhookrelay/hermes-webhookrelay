@@ -35,7 +35,6 @@ class RelayProcess:
             "forward",
             "--bucket",
             self.bucket,
-            "--no-interactive",
             "--max-retries",
             str(self.max_retries),
             "--retry-wait-min",

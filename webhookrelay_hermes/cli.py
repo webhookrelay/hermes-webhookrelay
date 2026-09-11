@@ -58,7 +58,6 @@ def _setup(args: argparse.Namespace) -> int:
         bucket,
         destination,
         "--no-agent",
-        "--no-interactive",
     ]
     if args.dry_run:
         print(" ".join(command))
